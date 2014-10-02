@@ -9,9 +9,8 @@ chrome.extension.sendMessage({}, function(response) {
 		// ----------------------------------------------------------
     var widget = document.createElement('div');
 		widget.id = 'web-sticker'
-		widget.innerHTML = '<a href="#">Install</a>';
-		widget.className = "button";
-		document.body.innerHTML += widget.innerHTML;
+		widget.style.backgroundImage="url("+chrome.extension.getURL('icons/orange48.png')+")";
+		document.body.innerHTML += widget.outerHTML;
 		// document.body.appendChild(download_btn);
     // $("body").append($(download_btn.innerHTML));
 		console.log("Hello. This message was sent from scripts/inject.js");
