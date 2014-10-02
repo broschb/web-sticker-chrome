@@ -3,17 +3,12 @@ chrome.extension.sendMessage({}, function(response) {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
 
-		// ----------------------------------------------------------
-		// This part of the script triggers when page is done loading
-		console.log("Hello. This message was sent from scripts/inject.js");
-		// ----------------------------------------------------------
     var widget = document.createElement('div');
 		widget.id = 'web-sticker'
 		widget.style.backgroundImage="url("+chrome.extension.getURL('icons/orange48.png')+")";
 		document.body.innerHTML += widget.outerHTML;
-		// document.body.appendChild(download_btn);
-    // $("body").append($(download_btn.innerHTML));
-		console.log("Hello. This message was sent from scripts/inject.js");
+		$('#web-sticker').click(clickHandler);
+
 	}
 	}, 10);
 });
