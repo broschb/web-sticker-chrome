@@ -13,14 +13,14 @@
   "content_scripts": [
     {
       "run_at" : "document_idle",
-      "matches": ["http://*/*"],
+      "matches": ["*://*/*"],
       "all_frames": true,
       "css": [
         "src/inject/inject.css"
       ]
     },
     {
-      "matches": ["http://*/*"],
+      "matches": ["*://*/*"],
       "js": [
         "js/jquery/jquery.js",
         "src/inject/inject.js"
