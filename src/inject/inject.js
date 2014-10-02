@@ -7,8 +7,7 @@ chrome.extension.sendMessage({}, function(response) {
 		widget.id = 'web-sticker'
 		widget.style.backgroundImage="url("+chrome.extension.getURL('icons/orange48.png')+")";
 		document.body.innerHTML += widget.outerHTML;
-		$('#web-sticker').click(clickHandler);
-
+		document.getElementById('web-sticker').addEventListener("click", clickHandler);
 	}
 	}, 10);
 });
