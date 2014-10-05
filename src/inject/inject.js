@@ -19,6 +19,7 @@ function clickHandler(){
 var buildMenu = function(){
   //menu items
   var menu_items = [];
+  //TODO make each one it's own encapsulated object
   var add_sticker = {icon: 'icons/bookmark-3x.png', function: addItem};
   menu_items.push(add_sticker);
 
@@ -52,15 +53,23 @@ var buildMenu = function(){
 
 var addItem = function(){
   console.log('adding');
+  var _body = document.getElementsByTagName('body') [0];
+  _body.addEventListener("mouseup", captureItem);
+}
+
+var captureItem = function(){
+  var text = getSelectionText();
+  console.log(text);
+  var _body = document.getElementsByTagName('body') [0];
+  _body.removeEventListener("mouseup", captureItem);
 }
 
 var getSelectionText = function(){
-   console.log("click")
     var text = "";
-    // if (window.getSelection) {
-        // text = window.getSelection().toString();
-    // } else if (document.selection && document.selection.type != "Control") {
-        // text = document.selection.createRange().text;
-    // }
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
     return text;
 }
