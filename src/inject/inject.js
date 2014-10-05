@@ -1,3 +1,4 @@
+var webStickerVisible = false;
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
 	if (document.readyState === "complete") {
@@ -8,6 +9,10 @@ chrome.extension.sendMessage({}, function(response) {
 });
 
 function clickHandler(){
+  visibility = webStickerVisible ? 'hidden' : 'visible'
+  webStickerVisible = !webStickerVisible;
+  var menu = document.getElementById('web-sticker-menu');
+  menu.style.visibility=visibility;
 	// alert(getSelectionText());
 }
 
@@ -17,8 +22,11 @@ var buildMenu = function(){
   //menu dive
   var menu_div = document.createElement('div');
   menu_div.id = 'web-sticker-menu'
+  menu_div.style.visibility='hidden'
   for(var i = 0; i<2; i++){
     var div = document.createElement('div')
+    div.className = 'web-menu';
+    div.style.backgroundImage="url("+chrome.extension.getURL('icons/bookmark-3x.png')+")";
     menu_div.appendChild(div)
   }
 

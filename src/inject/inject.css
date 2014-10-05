@@ -8,4 +8,28 @@
    padding-right: 50px;
    padding-bottom: 50px;
    background-repeat: no-repeat;
+   cursor: pointer;
+ }
+
+ #web-sticker-menu{
+   position: fixed;
+   border-radius: 4px;
+   border: 1px solid rgba(188,188,188,0.9);
+   width: 42px;
+   bottom: 0;
+   right: 0;
+   background-color: #FFF;
+   margin-bottom: 50px;
+   margin-right: 5px;
+   cursor: pointer;
+ }
+
+ .web-menu{
+   height: 20px;
+   padding: 10px 5px 10px 5px;
+   border-top: solid 1px #EDEDED;
+   opacity: 0.7;
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: 30px;
  }
