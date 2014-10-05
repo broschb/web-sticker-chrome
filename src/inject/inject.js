@@ -17,16 +17,23 @@ function clickHandler(){
 }
 
 var buildMenu = function(){
+  //menu items
+  var menu_items = [];
+  var add_sticker = {icon: 'icons/bookmark-3x.png', function: addItem};
+  menu_items.push(add_sticker);
+
   var _body = document.getElementsByTagName('body') [0];
 
-  //menu dive
+  //menu div
   var menu_div = document.createElement('div');
   menu_div.id = 'web-sticker-menu'
   menu_div.style.visibility='hidden'
-  for(var i = 0; i<2; i++){
+  for(var i = 0; i<menu_items.length; i++){
+    item = menu_items[i]
     var div = document.createElement('div')
     div.className = 'web-menu';
-    div.style.backgroundImage="url("+chrome.extension.getURL('icons/bookmark-3x.png')+")";
+    div.style.backgroundImage="url("+chrome.extension.getURL(item.icon)+")";
+    div.addEventListener("click", item.function);
     menu_div.appendChild(div)
   }
 
@@ -41,6 +48,10 @@ var buildMenu = function(){
 
   //listeners
   document.getElementById('web-sticker').addEventListener("click", clickHandler);
+}
+
+var addItem = function(){
+  console.log('adding');
 }
 
 var getSelectionText = function(){
