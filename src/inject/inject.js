@@ -29,14 +29,20 @@ var buildMenu = function(){
   var menu_div = document.createElement('div');
   menu_div.id = 'web-sticker-menu'
   menu_div.style.visibility='hidden'
-  for(var i = 0; i<menu_items.length; i++){
-    item = menu_items[i]
-    var div = document.createElement('div')
-    div.className = 'web-menu';
-    div.style.backgroundImage="url("+chrome.extension.getURL(item.icon)+")";
-    div.addEventListener("click", item.function);
-    menu_div.appendChild(div)
-  }
+	var iframe = document.createElement('IFRAME')
+	iframe.setAttribute("src", "http://localhost:3000/embed");
+  // ifrm.style.width = 640+"px";
+  // ifrm.style.height = 480+"px";
+	menu_div.appendChild(iframe)
+
+  // for(var i = 0; i<menu_items.length; i++){
+  //   item = menu_items[i]
+  //   var div = document.createElement('div')
+  //   div.className = 'web-menu';
+  //   div.style.backgroundImage="url("+chrome.extension.getURL(item.icon)+")";
+  //   div.addEventListener("click", item.function);
+  //   menu_div.appendChild(div)
+  // }
 
   //button div
   var widget = document.createElement('div');
@@ -62,6 +68,8 @@ var captureItem = function(){
   console.log(text);
   var _body = document.getElementsByTagName('body') [0];
   _body.removeEventListener("mouseup", captureItem);
+
+  //TODO save text somewhere
 }
 
 var getSelectionText = function(){
