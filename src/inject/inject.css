@@ -23,13 +23,3 @@
    margin-right: 5px;
    cursor: pointer;
  }
-
- .web-menu{
-   height: 20px;
-   padding: 10px 5px 10px 5px;
-   border-top: solid 1px #EDEDED;
-   opacity: 0.7;
-   background-position: center center;
-   background-repeat: no-repeat;
-   background-size: 30px;
- }
