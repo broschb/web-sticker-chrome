@@ -1,9 +1,13 @@
 var webStickerVisible = false;
+var windowProxy;
+var embed_url = "http://localhost:3000/embed";
+
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
     buildMenu();
+		buildProxy();
 	}
 	}, 10);
 });
@@ -13,6 +17,7 @@ function clickHandler(){
   webStickerVisible = !webStickerVisible;
   var menu = document.getElementById('web-sticker-menu');
   menu.style.visibility=visibility;
+	windowProxy.post({'action': 'supersizeme'});
 	// alert(getSelectionText());
 }
 
@@ -27,13 +32,15 @@ var buildMenu = function(){
 
   //menu div
   var menu_div = document.createElement('div');
-  menu_div.id = 'web-sticker-menu'
-  menu_div.style.visibility='hidden'
-	var iframe = document.createElement('IFRAME')
-	iframe.setAttribute("src", "http://localhost:3000/embed");
+  menu_div.id = 'web-sticker-menu';
+  menu_div.style.visibility='hidden';
+	var iframe = document.createElement('IFRAME');
+	iframe.setAttribute("src", embed_url);
+	iframe.id = 'sticker-embed';
+	iframe.name = 'sticker-embed';
   // ifrm.style.width = 640+"px";
   // ifrm.style.height = 480+"px";
-	menu_div.appendChild(iframe)
+	menu_div.appendChild(iframe);
 
   // for(var i = 0; i<menu_items.length; i++){
   //   item = menu_items[i]
@@ -80,4 +87,23 @@ var getSelectionText = function(){
         text = document.selection.createRange().text;
     }
     return text;
+}
+
+/** Message Communication Methods **/
+function buildProxy(){
+	// Create a proxy window to send to and receive
+  // messages from the iFrame
+  windowProxy = new Porthole.WindowProxy(embed_url, 'sticker-embed');
+
+  // Register an event handler to receive messages;
+  windowProxy.addEventListener(onMessage);
+}
+
+function onMessage(messageEvent) {
+	console.log('event from iframe')
+    /*
+   messageEvent.origin: Protocol and domain origin of the message
+   messageEvent.data: Message itself
+   messageEvent.source: Window proxy object, useful to post a response
+   */
 }

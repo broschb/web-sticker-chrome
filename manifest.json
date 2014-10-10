@@ -25,7 +25,8 @@
     {
       "matches": ["*://*/*"],
       "js": [
-        "src/inject/inject.js"
+        "src/inject/inject.js",
+        "js/porthole.min.js"
       ],
       "css":[
         "src/inject/inject.css"
