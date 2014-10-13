@@ -1,6 +1,7 @@
 var webStickerVisible = false;
 var windowProxy;
 var embed_url = "http://localhost:3000/embed";
+var initialized = false;
 
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
@@ -17,7 +18,11 @@ function clickHandler(){
   webStickerVisible = !webStickerVisible;
   var menu = document.getElementById('web-sticker-menu');
   menu.style.visibility=visibility;
-	windowProxy.post({'action': 'supersizeme'});
+	if(!initialized){
+		initialized = true;
+		var root = location.protocol + '//' + location.host;
+	  windowProxy.post({'action': 'initialize', 'url':root});
+	}
 	// alert(getSelectionText());
 }
 
@@ -72,11 +77,10 @@ var addItem = function(){
 
 var captureItem = function(){
   var text = getSelectionText();
-  console.log(text);
   var _body = document.getElementsByTagName('body') [0];
   _body.removeEventListener("mouseup", captureItem);
-
-  //TODO save text somewhere
+  windowProxy.post({'action': 'create', 'text':text});
+  //TODO post success message to ui
 }
 
 var getSelectionText = function(){
@@ -100,7 +104,12 @@ function buildProxy(){
 }
 
 function onMessage(messageEvent) {
-	console.log('event from iframe')
+	switch(messageEvent.data.action) {
+		case 'add-sticker':
+			console.log("listening for item to add")
+			addItem();
+			break;
+	}
     /*
    messageEvent.origin: Protocol and domain origin of the message
    messageEvent.data: Message itself
