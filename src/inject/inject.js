@@ -109,6 +109,12 @@ function onMessage(messageEvent) {
 			console.log("listening for item to add")
 			addItem();
 			break;
+		case 'error':
+			console.log("should show error");
+			break;
+		case 'success':
+			console.log("should show success");
+			break;
 	}
     /*
    messageEvent.origin: Protocol and domain origin of the message
