@@ -34,7 +34,7 @@ function clickHandler(){
 		initialized = true;
 		var root = location.protocol + '//' + location.host;
 		var title = document.title
-	  windowProxy.post({'action': 'initialize', 'url':root, 'pageTitle':title});
+	  windowProxy.post({'action': 'initialize', 'url':root, 'pageTitle':title, 'pageUrl':location.pathname});
 	}
 	// alert(getSelectionText());
 }
@@ -94,7 +94,7 @@ var captureItem = function(){
   var _body = document.getElementsByTagName('body') [0];
   _body.removeEventListener("mouseup", captureItem);
 	highlighter.highlightSelection(highlightClassName, range);
-  windowProxy.post({'action': 'create', 'text':range.toString(), 'serializeRange': se, 'pageUrl':location.pathname});
+  windowProxy.post({'action': 'create', 'text':range.toString(), 'serializeRange': se});
   //TODO post success message to ui
 }
 
@@ -119,6 +119,10 @@ function onMessage(messageEvent) {
 			break;
 		case 'success':
 			console.log("should show success");
+			break;
+		case 'loadScripplets':
+			console.log("loading scripplets TODO get range and highlight");
+		  console.log(messageEvent.data.scripplets);
 			break;
 	}
     /*
