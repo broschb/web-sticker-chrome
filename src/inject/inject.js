@@ -2,11 +2,23 @@ var webStickerVisible = false;
 var windowProxy;
 var embed_url = "http://localhost:3000/embed";
 var initialized = false;
+var highlighter = null;
+var cssApplier = null;
+var highlightClassName = "highlight-green";
 
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
+
+		//init rangy
+		rangy.init();
+		cssApplier = rangy.createCssClassApplier(highlightClassName, {
+        normalize: true
+    });
+    highlighter = rangy.createHighlighter(document, "TextRange");
+    highlighter.addClassApplier(cssApplier);
+
     buildMenu();
 		buildProxy();
 	}
@@ -21,7 +33,8 @@ function clickHandler(){
 	if(!initialized){
 		initialized = true;
 		var root = location.protocol + '//' + location.host;
-	  windowProxy.post({'action': 'initialize', 'url':root});
+		var title = document.title
+	  windowProxy.post({'action': 'initialize', 'url':root, 'pageTitle':title});
 	}
 	// alert(getSelectionText());
 }
@@ -76,21 +89,13 @@ var addItem = function(){
 }
 
 var captureItem = function(){
-  var text = getSelectionText();
+  var range = rangy.getSelection();
+  var se = rangy.serializeSelection(range, true);
   var _body = document.getElementsByTagName('body') [0];
   _body.removeEventListener("mouseup", captureItem);
-  windowProxy.post({'action': 'create', 'text':text});
+	highlighter.highlightSelection(highlightClassName, range);
+  windowProxy.post({'action': 'create', 'text':range.toString(), 'serializeRange': se, 'pageUrl':location.pathname});
   //TODO post success message to ui
-}
-
-var getSelectionText = function(){
-    var text = "";
-    if (window.getSelection) {
-        text = window.getSelection().toString();
-    } else if (document.selection && document.selection.type != "Control") {
-        text = document.selection.createRange().text;
-    }
-    return text;
 }
 
 /** Message Communication Methods **/
