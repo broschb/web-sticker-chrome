@@ -26,7 +26,12 @@
       "matches": ["*://*/*"],
       "js": [
         "src/inject/inject.js",
-        "js/porthole.min.js"
+        "js/porthole.min.js",
+        "js/rangy-core.js",
+        "js/rangy-serializer.js",
+        "js/rangy-textrange.js",
+        "js/rangy-classapplier.js",
+        "js/rangy-highlighter.js"
       ],
       "css":[
         "src/inject/inject.css"
