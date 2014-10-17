@@ -98,6 +98,16 @@ var captureItem = function(){
   //TODO post success message to ui
 }
 
+var loadScripplets = function(scripplets){
+	if(scripplets){
+	  for(var i = 0; i < scripplets.length; i++){
+      scripplet = scripplets[i];
+			range = rangy.deserializeSelection(scripplet.serialize_range);
+			highlighter.highlightSelection(highlightClassName, range);
+	  }
+  }
+}
+
 /** Message Communication Methods **/
 function buildProxy(){
 	// Create a proxy window to send to and receive
@@ -121,8 +131,7 @@ function onMessage(messageEvent) {
 			console.log("should show success");
 			break;
 		case 'loadScripplets':
-			console.log("loading scripplets TODO get range and highlight");
-		  console.log(messageEvent.data.scripplets);
+		  loadScripplets(messageEvent.data.scripplets);
 			break;
 	}
     /*
