@@ -1,15 +1,20 @@
 var webStickerVisible = false;
 var windowProxy;
-var embed_url = "http://localhost:3000/embed";
+var embed_url = "http://www.scribblet.net/embed";
 var initialized = false;
 var highlighter = null;
 var cssApplier = null;
 var highlightClassName = "highlight-green";
+var __devMode = null;
 
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
+		isDevMode();
+		if(__devMode){
+		  embed_url = "http://localhost:3000/embed";
+		}
 
 		//init rangy
 		rangy.init();
@@ -25,17 +30,26 @@ chrome.extension.sendMessage({}, function(response) {
 	}, 10);
 });
 
+function isDevMode() {
+    if (__devMode == null) {
+        var mUrl = chrome.runtime.getURL('manifest.json');
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", mUrl, false);
+        xhr.onload = function () {
+            var json = JSON.parse(this.responseText);
+            __devMode = !('update_url' in json);
+            console.log("__devMode: " + __devMode);
+        };
+        xhr.send();
+    }
+    return __devMode
+}
+
 function clickHandler(){
   visibility = webStickerVisible ? 'hidden' : 'visible'
   webStickerVisible = !webStickerVisible;
   var menu = document.getElementById('web-sticker-menu');
   menu.style.visibility=visibility;
-	if(!initialized){
-		initialized = true;
-		var root = location.protocol + '//' + location.host;
-		var title = document.title
-	  windowProxy.post({'action': 'initialize', 'url':root, 'pageTitle':title, 'pageUrl':location.pathname});
-	}
 	// alert(getSelectionText());
 }
 
@@ -56,23 +70,12 @@ var buildMenu = function(){
 	iframe.setAttribute("src", embed_url);
 	iframe.id = 'sticker-embed';
 	iframe.name = 'sticker-embed';
-  // ifrm.style.width = 640+"px";
-  // ifrm.style.height = 480+"px";
 	menu_div.appendChild(iframe);
-
-  // for(var i = 0; i<menu_items.length; i++){
-  //   item = menu_items[i]
-  //   var div = document.createElement('div')
-  //   div.className = 'web-menu';
-  //   div.style.backgroundImage="url("+chrome.extension.getURL(item.icon)+")";
-  //   div.addEventListener("click", item.function);
-  //   menu_div.appendChild(div)
-  // }
 
   //button div
   var widget = document.createElement('div');
   widget.id = 'web-sticker'
-  widget.style.backgroundImage="url("+chrome.extension.getURL('icons/orange48.png')+")";
+  widget.style.backgroundImage="url("+chrome.extension.getURL('icons/scribblet_icon.png')+")";
 
   //append to body
   _body.appendChild(menu_div);
@@ -108,6 +111,15 @@ var loadScripplets = function(scripplets){
   }
 }
 
+function initializeScripplet(){
+	if(!initialized){
+		initialized = true;
+		var root = location.protocol + '//' + location.host;
+		var title = document.title
+		windowProxy.post({'action': 'initialize', 'url':root, 'pageTitle':title, 'pageUrl':location.pathname});
+	}
+}
+
 /** Message Communication Methods **/
 function buildProxy(){
 	// Create a proxy window to send to and receive
@@ -116,6 +128,9 @@ function buildProxy(){
 
   // Register an event handler to receive messages;
   windowProxy.addEventListener(onMessage);
+
+	//try to intialize scripplets after timeout
+	setTimeout( initializeScripplet, 2000 );
 }
 
 function onMessage(messageEvent) {

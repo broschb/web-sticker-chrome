@@ -1,17 +1,18 @@
 {
-  "name": "Web Stickers",
+  "name": "Scribblet",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "Web Stickers",
-  "homepage_url": "http://extensionizr.com",
+  "description": "Organize the Web",
+  "homepage_url": "http://www.scribblet.net/",
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/orange48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/scribblet_icon_16.png",
+    "48": "icons/scribblet_icon_48.png",
+    "128": "icons/scribblet_icon_128.png"
   },
   "default_locale": "en",
   "web_accessible_resources": [
-    "icons/*.png"
+    "icons/*.png",
+    "manifest.json"
   ],
   "content_scripts": [
     {
