@@ -12,21 +12,24 @@
   "default_locale": "en",
   "web_accessible_resources": [
     "icons/*.png",
+    "fonts/*.woff",
     "manifest.json"
   ],
   "content_scripts": [
     {
       "run_at" : "document_idle",
-      "matches": ["*://*/*"],
+      "matches": ["http://*/*"],
       "all_frames": true,
       "css": [
-        "src/inject/inject.css"
+        "src/inject/inject.css",
+        "css/open-iconic.css"
       ]
     },
     {
-      "matches": ["*://*/*"],
+      "matches": ["http://*/*"],
       "js": [
         "src/inject/inject.js",
+        "js/jquery-2.1.1.min.js",
         "js/porthole.min.js",
         "js/rangy-core.js",
         "js/rangy-serializer.js",
@@ -35,7 +38,8 @@
         "js/rangy-highlighter.js"
       ],
       "css":[
-        "src/inject/inject.css"
+        "src/inject/inject.css",
+        "css/open-iconic.css"
       ]
     }
   ]
