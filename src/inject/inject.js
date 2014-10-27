@@ -24,6 +24,7 @@ chrome.extension.sendMessage({}, function(response) {
     highlighter = rangy.createHighlighter(document, "TextRange");
     highlighter.addClassApplier(cssApplier);
 
+    buildTopBar();
     buildMenu();
 		buildProxy();
 	}
@@ -53,6 +54,17 @@ function clickHandler(){
 	// alert(getSelectionText());
 }
 
+var buildTopBar = function(){
+  var toolbarHeight = 50;
+
+  var div = document.createElement("div");
+  div.id = "notification-bar";
+
+  var _body = document.getElementsByTagName('body') [0];
+	_body.appendChild(div);
+  // document.documentElement.appendChild(div);
+}
+
 var buildMenu = function(){
   //menu items
   var menu_items = [];
@@ -70,12 +82,15 @@ var buildMenu = function(){
 	iframe.setAttribute("src", embed_url);
 	iframe.id = 'sticker-embed';
 	iframe.name = 'sticker-embed';
+	iframe.frameBorder = '0';
 	menu_div.appendChild(iframe);
 
   //button div
   var widget = document.createElement('div');
-  widget.id = 'web-sticker'
-  widget.style.backgroundImage="url("+chrome.extension.getURL('icons/scribblet_icon.png')+")";
+  widget.id = 'web-sticker';
+	widget.className = 'oi';
+	widget.setAttribute('data-glyph','bookmark');
+  // widget.style.backgroundImage="url("+chrome.extension.getURL('icons/scribblet_icon.png')+")";
 
   //append to body
   _body.appendChild(menu_div);
@@ -85,8 +100,31 @@ var buildMenu = function(){
   document.getElementById('web-sticker').addEventListener("click", clickHandler);
 }
 
+var showWarning = function(msg){
+	$("#notification-bar").removeClass();
+	$("#notification-bar").addClass("scribblet-warning");
+  showMessage(msg);
+}
+
+var showSuccess = function(msg){
+	$("#notification-bar").removeClass();
+	$("#notification-bar").addClass("scribblet-success");
+	showMessage(msg);
+	setTimeout(hideMessage,2000);
+}
+
+var showMessage = function(msg){
+	$('#notification-bar').html(msg);
+	$('#notification-bar').fadeIn("fast");
+}
+
+var hideMessage = function(){
+	$('#notification-bar').html('');
+	$('#notification-bar').fadeOut("fast");
+}
+
 var addItem = function(){
-  console.log('adding');
+  showWarning("Select text on the screen to mark");
   var _body = document.getElementsByTagName('body') [0];
   _body.addEventListener("mouseup", captureItem);
 }
@@ -98,7 +136,7 @@ var captureItem = function(){
   _body.removeEventListener("mouseup", captureItem);
 	highlighter.highlightSelection(highlightClassName, range);
   windowProxy.post({'action': 'create', 'text':range.toString(), 'serializeRange': se});
-  //TODO post success message to ui
+  showSuccess("Scribblet created successfully!");
 }
 
 var loadScripplets = function(scripplets){
