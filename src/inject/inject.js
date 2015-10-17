@@ -211,14 +211,11 @@ function buildProxy(){
 function onMessage(messageEvent) {
 	switch(messageEvent.data.action) {
 		case 'add-sticker':
-			console.log("listening for item to add")
 			addItem();
 			break;
 		case 'error':
-			console.log("should show error");
 			break;
 		case 'success':
-			console.log("should show success");
 			break;
 		case 'loadScripplets':
 		  loadScripplets(messageEvent.data.scripplets);
