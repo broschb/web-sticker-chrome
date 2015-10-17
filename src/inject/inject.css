@@ -60,3 +60,20 @@
  .highlight-green {
     background-color:rgba(102,255,102,0.5);
 }
+
+.numberCircle {
+    border-radius: 50%;
+    display: none;
+    width: 20px;
+    height: 20px;
+    padding: 1px;
+    top: 0;
+    right: 0;
+    position: absolute;
+
+    background: red;
+    color: white;
+    text-align: center;
+
+    font: 16px Arial, sans-serif;
+}

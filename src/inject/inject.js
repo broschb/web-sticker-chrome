@@ -6,6 +6,8 @@ var highlighter = null;
 var cssApplier = null;
 var highlightClassName = "highlight-green";
 var __devMode = null;
+var scribbletsArray = null;
+var scribbletsVisible = false;
 
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
@@ -13,7 +15,7 @@ chrome.extension.sendMessage({}, function(response) {
 		clearInterval(readyStateCheckInterval);
 		isDevMode();
 		if(__devMode){
-		  embed_url = "http://localhost:3000/embed";
+		  embed_url = "http://localhost:5000/embed";
 		}
 
 		//init rangy
@@ -92,6 +94,10 @@ var buildMenu = function(){
 	widget.setAttribute('data-glyph','bookmark');
   // widget.style.backgroundImage="url("+chrome.extension.getURL('icons/scribblet_icon.png')+")";
 
+  var countDiv = document.createElement('div');
+	countDiv.id = 'scribblet-count';
+	countDiv.className = 'numberCircle';
+  widget.appendChild(countDiv);
   //append to body
   _body.appendChild(menu_div);
   _body.appendChild(widget);
@@ -100,10 +106,14 @@ var buildMenu = function(){
   document.getElementById('web-sticker').addEventListener("click", clickHandler);
 }
 
-var showWarning = function(msg){
+var showWarning = function(msg, timeout){
+	timeout = typeof timeout !== 'undefined' ? timeout : false;
 	$("#notification-bar").removeClass();
 	$("#notification-bar").addClass("scribblet-warning");
   showMessage(msg);
+	if(timeout == true){
+		setTimeout(hideMessage,2000);
+	}
 }
 
 var showSuccess = function(msg){
@@ -123,6 +133,13 @@ var hideMessage = function(){
 	$('#notification-bar').fadeOut("fast");
 }
 
+var showCount = function(count){
+  if(count > 0){
+		$('#scribblet-count').html(count);
+		$('#scribblet-count').fadeIn("fast");
+	}
+}
+
 var addItem = function(){
   showWarning("Select text on the screen to mark");
   var _body = document.getElementsByTagName('body') [0];
@@ -139,14 +156,34 @@ var captureItem = function(){
   showSuccess("Scribblet created successfully!");
 }
 
-var loadScripplets = function(scripplets){
-	if(scripplets){
-	  for(var i = 0; i < scripplets.length; i++){
-      scripplet = scripplets[i];
-			range = rangy.deserializeSelection(scripplet.serialize_range);
-			highlighter.highlightSelection(highlightClassName, range);
+var toggleScribblets = function(){
+	var warning = false;
+	if(scribbletsArray){
+	  if(scribbletsVisible == true){
+			try{
+				highlighter.removeAllHighlights();
+			}catch(err){}
+	  }else{
+		  for(var i = 0; i < scribbletsArray.length; i++){
+			  scribblet = scribbletsArray[i];
+				try{
+				  range = rangy.deserializeSelection(scribblet.serialize_range);
+					highlighter.highlightSelection(highlightClassName, range);
+				}catch(err){
+				  warning = true;
+				}
+			}
 	  }
   }
+  scribbletsVisible = !scribbletsVisible
+	if(warning == true){
+		showWarning("Unable to highlight some scribblets.", true);
+	}
+}
+
+var loadScripplets = function(scribblets){
+	scribbletsArray = scribblets
+  showCount(scribblets.length);
 }
 
 function initializeScripplet(){
@@ -185,6 +222,9 @@ function onMessage(messageEvent) {
 			break;
 		case 'loadScripplets':
 		  loadScripplets(messageEvent.data.scripplets);
+			break;
+		case 'toggle-scribblets':
+			toggleScribblets();
 			break;
 	}
     /*
